@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function google_ai_application_theme(
+  $existing,
+  $type,
+  $theme,
+  $path
+) {
+
+  return [
+    'google_ai_application' => [
+      'variables' => [
+        'label' => NULL,
+        'project_name' => NULL,
+        'data_store_name' => NULL,
+        'schema_name' => NULL,
+        'location' => NULL,
+        'branch_name' => NULL,
+        'content_types' => NULL,
+        'total_nodes' => 0,
+        'content_type_counts' => [],
+      ],
+      'template' => 'google-ai-application',
+    ],
+    'google_ai_application_page' => [
+      'template' => 'google-ai-application-page',
+      'variables' => [
+        'title' => NULL,
+        'description' => NULL,
+        'cta_links' => [],
+        'footer_cards' => [],
+        'search_form' => [],
+      ],
+    ],
+  ];
+}

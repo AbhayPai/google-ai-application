@@ -1,0 +1,5 @@
+entity.google_ai_application.collection:
+  title: 'Google AI Applications'
+  description: 'Manage Google AI application configurations.'
+  route_name: entity.google_ai_application.collection
+  parent: system.admin_config_search

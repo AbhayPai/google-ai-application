@@ -1,0 +1,86 @@
+entity.google_ai_application.canonical:
+  path: '/admin/config/search/google-ai-application/{google_ai_application}'
+  defaults:
+    _entity_view: 'google_ai_application'
+    _title_callback: '\Drupal\Core\Entity\Controller\EntityController::title'
+  requirements:
+    _permission: 'administer google ai application'
+
+entity.google_ai_application.collection:
+  path: '/admin/config/search/google-ai-application'
+  defaults:
+    _entity_list: 'google_ai_application'
+    _title: 'Google AI Applications'
+  requirements:
+    _permission: 'administer site configuration'
+
+entity.google_ai_application.add_form:
+  path: '/admin/config/search/google-ai-application/add'
+  defaults:
+    _entity_form: 'google_ai_application.add'
+    _title: 'Add Google AI Application'
+  requirements:
+    _permission: 'administer site configuration'
+
+entity.google_ai_application.edit_form:
+  path: '/admin/config/search/google-ai-application/{google_ai_application}/edit'
+  defaults:
+    _entity_form: 'google_ai_application.edit'
+    _title: 'Edit Google AI Application'
+  requirements:
+    _permission: 'administer site configuration'
+
+entity.google_ai_application.delete_form:
+  path: '/admin/config/search/google-ai-application/{google_ai_application}/delete'
+  defaults:
+    _entity_form: 'google_ai_application.delete'
+    _title: 'Delete Google AI Application'
+  requirements:
+    _permission: 'administer site configuration'
+
+google_ai_application.create_application_form:
+  path: '/admin/config/search/google-ai-application/{google_ai_application}/create-application'
+  defaults:
+    _form: '\Drupal\google_ai_application\Form\CreateApplicationForm'
+    _title: 'Schema'
+  requirements:
+    _permission: 'administer site configuration'
+
+google_ai_application.schema_form:
+  path: '/admin/config/search/google-ai-application/{google_ai_application}/schema'
+  defaults:
+    _form: '\Drupal\google_ai_application\Form\SchemaForm'
+    _title: 'Schema'
+  requirements:
+    _permission: 'administer site configuration'
+
+google_ai_application.import_form:
+  path: '/admin/config/search/google-ai-application/{google_ai_application}/import'
+  defaults:
+    _form: '\Drupal\google_ai_application\Form\ImportForm'
+    _title: 'Import'
+  requirements:
+    _permission: 'administer site configuration'
+
+google_ai_application.purge_form:
+  path: '/admin/config/search/google-ai-application/{google_ai_application}/purge'
+  defaults:
+    _form: '\Drupal\google_ai_application\Form\PurgeForm'
+    _title: 'Purge'
+  requirements:
+    _permission: 'administer site configuration'
+
+google_ai_application.search_config_form:
+  path: '/admin/config/search/google-ai-application/{google_ai_application}/search-config'
+  defaults:
+    _entity_form: 'google_ai_application.search_config'
+    _title: 'Search Config'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    parameters:
+      google_ai_application:
+        type: entity:google_ai_application
+
+route_callbacks:
+  - '\Drupal\google_ai_application\Routing\GoogleAiApplicationRoutes::routes'

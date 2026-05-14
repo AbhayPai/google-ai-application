@@ -1,0 +1,49 @@
+<div class="support-hub">
+
+  <section class="hero">
+
+    <h1>{{ title }}</h1>
+
+    <div class="description">
+      {{ description }}
+    </div>
+
+    <div class="support-hub-search">
+      {{ search_form }}
+    </div>
+
+    {% if cta_links %}
+      <div class="cta-links">
+        {% for item in cta_links %}
+          <a href="{{ item.url }}">
+            {{ item.title }}
+          </a>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+  </section>
+
+  {% if footer_cards %}
+    <section class="footer-cards">
+
+      {% for card in footer_cards %}
+        <div class="footer-card">
+
+          <h3>{{ card.field_title }}</h3>
+
+          <div>
+            {{ card.field_content }}
+          </div>
+
+          <a href="{{ card.field_link }}">
+            Learn more
+          </a>
+
+        </div>
+      {% endfor %}
+
+    </section>
+  {% endif %}
+
+</div>

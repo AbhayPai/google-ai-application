@@ -1,0 +1,11 @@
+curl -X POST \
+-H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H "Content-Type: application/json" \
+-H "X-Goog-User-Project: project-29db6f91-b89a-46b4-bc0" \
+"https://discoveryengine.googleapis.com/v1/projects/project-29db6f91-b89a-46b4-bc0/locations/global/collections/default_collection/engines?engineId=search-api-app" \
+-d '{
+  "solutionType": "SOLUTION_TYPE_SEARCH",
+  "displayName": "app_search",
+  "dataStoreIds": ["data_store_api_document"],
+  "industryVertical": "GENERIC"
+}'

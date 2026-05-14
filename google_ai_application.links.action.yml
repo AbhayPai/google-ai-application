@@ -1,0 +1,5 @@
+entity.google_ai_application.add_form:
+  route_name: entity.google_ai_application.add_form
+  title: 'Add Google AI Application'
+  appears_on:
+    - entity.google_ai_application.collection

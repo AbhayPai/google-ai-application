@@ -1,0 +1,18 @@
+curl -X PATCH \
+-H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H "Content-Type: application/json" \
+"https://discoveryengine.googleapis.com/v1/projects/project-29db6f91-b89a-46b4-bc0/locations/global/collections/default_collection/dataStores/data_store_api_document/schemas/default_schema" \
+-d '{
+  "structSchema": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "dynamic": "true",
+  "datetime_detection": true,
+  "geolocation_detection": false,
+  "properties": {
+    "title": {
+      "type": "string"
+    }
+  }
+}
+}'

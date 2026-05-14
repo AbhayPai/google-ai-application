@@ -1,0 +1,7 @@
+curl -X POST \
+-H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H "Content-Type: application/json" \
+"https://discoveryengine.googleapis.com/v1beta/projects/project-29db6f91-b89a-46b4-bc0/locations/global/collections/default_collection/dataStores/data_store_api_document/branches/0/documents?documentId=node-uuid-1" \
+-d '{
+  "structData":  {    "title": "Initial Data"}
+}'
