@@ -1,0 +1,10 @@
+name: Google AI Application
+type: module
+description: Stores Google AI application configurations per content type.
+package: Custom
+core_version_requirement: ^10 || ^11
+
+dependencies:
+  - drupal:node
+  - drupal:config
+  - drupal:core_event_dispatcher

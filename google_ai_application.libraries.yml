@@ -1,0 +1,19 @@
+# google_ai_application.libraries.yml
+
+search-ajax:
+  version: VERSION
+  js:
+    js/search-ajax.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+    - core/once   # Recommended for Drupal 10+
+
+# Optional: If you want to style the results
+google-ai-search:
+  version: VERSION
+  css:
+    theme:
+      css/google-ai-search.css: {}
+      

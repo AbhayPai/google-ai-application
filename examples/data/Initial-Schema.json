@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "dynamic": "true",
+  "datetime_detection": true,
+  "geolocation_detection": false,
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "searchable": true,
+      "indexable": true,
+      "retrievable": true,
+      "dynamicFacetable": false,
+      "completable": true
+    },
+    "body": {
+      "type": "string",
+      "searchable": true,
+      "indexable": true,
+      "retrievable": true,
+      "dynamicFacetable": false,
+      "completable": false
+    },
+    "summary": {
+      "type": "string",
+      "searchable": true,
+      "indexable": true,
+      "retrievable": true,
+      "dynamicFacetable": false,
+      "completable": false
+    },
+    "url": {
+      "type": "string",
+      "searchable": true,
+      "indexable": true,
+      "retrievable": true,
+      "dynamicFacetable": false,
+      "completable": false
+    },
+    "videourl": {
+      "type": "string",
+      "searchable": true,
+      "indexable": true,
+      "retrievable": true,
+      "dynamicFacetable": false,
+      "completable": false
+    },
+    "langcode": {
+      "type": "string",
+      "searchable": true,
+      "indexable": true,
+      "retrievable": true,
+      "dynamicFacetable": false,
+      "completable": false
+    },
+    "category": {
+      "type": "string",
+      "searchable": true,
+      "indexable": true,
+      "retrievable": true,
+      "dynamicFacetable": true,
+      "completable": false
+    },
+    "usertype_array": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "searchable": true,
+        "indexable": true,
+        "retrievable": true,
+        "dynamicFacetable": true,
+        "completable": false
+      }
+    },
+    "created": {
+      "type": "datetime",
+      "searchable": false,
+      "indexable": true,
+      "retrievable": false,
+      "dynamicFacetable": false,
+      "completable": false
+    },
+    "changed": {
+      "type": "datetime",
+      "searchable": false,
+      "indexable": true,
+      "retrievable": false,
+      "dynamicFacetable": false,
+      "completable": false
+    }
+  }
+}

@@ -1,0 +1,93 @@
+<div class="google-ai-application">
+
+  <h2>{{ label }}</h2>
+
+  <table class="table">
+    <tbody>
+
+      <tr>
+        <th>Project ID</th>
+        <td>{{ project_id }}</td>
+      </tr>
+
+      <tr>
+        <th>Data Store ID</th>
+        <td>{{ data_store_id }}</td>
+      </tr>
+
+      <tr>
+        <th>Schema Name</th>
+        <td>{{ schema_name }}</td>
+      </tr>
+
+      <tr>
+        <th>Location</th>
+        <td>{{ location }}</td>
+      </tr>
+
+      <tr>
+        <th>Branch</th>
+        <td>{{ branch }}</td>
+      </tr>
+
+      <tr>
+        <th>Bucket Name</th>
+        <td>{{ bucket_name }}</td>
+      </tr>
+
+      <tr>
+        <th>Content Types</th>
+        <td>{{ content_types }}</td>
+      </tr>
+
+      <tr>
+        <th>Total Nodes</th>
+        <td>
+          <strong>{{ total_nodes }}</strong>
+        </td>
+      </tr>
+
+      <tr>
+        <th>Nodes Per Content Type</th>
+        <td>
+          <ul>
+            {% for item in content_type_counts %}
+              <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+
+      <tr>
+        <th>Last Purge</th>
+        <td>{{ last_purge }}</td>
+      </tr>
+
+      <tr>
+        <th>Last Purge Status</th>
+        <td>{{ last_purge_status }}</td>
+      </tr>
+
+      <tr>
+        <th>Last Schema Sync</th>
+        <td>{{ last_schema_sync }}</td>
+      </tr>
+
+      <tr>
+        <th>Last Schema Sync Status</th>
+        <td>{{ last_schema_sync_status }}</td>
+      </tr>
+
+      <tr>
+        <th>Last Import</th>
+        <td>{{ last_import }}</td>
+      </tr>
+
+      <tr>
+        <th>Last Import Status</th>
+        <td>{{ last_import_status }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

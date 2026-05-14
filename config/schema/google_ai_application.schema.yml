@@ -1,0 +1,91 @@
+google_ai_application.google_ai_application.*:
+  type: config_entity
+  label: 'Google AI Application'
+
+  mapping:
+
+    id:
+      type: string
+      label: 'ID'
+
+    label:
+      type: label
+      label: 'Label'
+
+    content_type:
+      type: sequence
+      label: 'Content Types'
+      sequence:
+        type: string
+
+    app_name:
+      type: string
+      label: 'App Name'
+
+    project_name:
+      type: string
+      label: 'Google Cloud Project ID'
+
+    data_store_name:
+      type: string
+      label: 'Data Store Name'
+
+    collection_name:
+      type: string
+      label: 'Collection Name'
+
+    schema_name:
+      type: string
+      label: 'Schema Name'
+
+    struct_schema:
+      type: string
+      label: 'JSON Schema Definition'
+
+    location:
+      type: string
+      label: 'Location'
+
+    branch_name:
+      type: string
+      label: 'Branch Name'
+
+    serving_config:
+      type: string
+      label: 'Search Serving Config'
+
+    field_title:
+      type: text
+
+    field_description_caption:
+      type: text
+
+    field_enable_prefilters:
+      type: boolean
+
+    field_show_camera_icon:
+      type: boolean
+
+    field_hero_search_cta_links:
+      type: sequence
+      sequence:
+        type: mapping
+        mapping:
+          title:
+            type: text
+          url:
+            type: text
+
+    footer_cards:
+      type: sequence
+      sequence:
+        type: mapping
+        mapping:
+          field_title:
+            type: text
+          field_content:
+            type: text
+          field_icon:
+            type: text
+          field_link:
+            type: text

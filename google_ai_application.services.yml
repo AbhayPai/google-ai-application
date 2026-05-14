@@ -1,0 +1,83 @@
+services:
+  google.discovery_engine.datastore_client:
+    class: Google\Cloud\DiscoveryEngine\V1\Client\DataStoreServiceClient
+
+  google.discovery_engine.document_client:
+      class: Google\Cloud\DiscoveryEngine\V1\Client\DocumentServiceClient
+
+  google.discovery_engine.engine_client:
+      class: Google\Cloud\DiscoveryEngine\V1\Client\EngineServiceClient
+
+  google.discovery_engine.schema_client:
+      class: Google\Cloud\DiscoveryEngine\V1\Client\SchemaServiceClient
+
+  google.discovery_engine.search_client:
+      class: Google\Cloud\DiscoveryEngine\V1\Client\SearchServiceClient
+
+  support_hub.entity_event_subscriber:
+    class: Drupal\google_ai_application\EventSubscriber\EntityEventSubscriber
+    arguments:
+      - '@queue'
+      - '@entity_type.manager'
+    tags:
+      - { name: event_subscriber }
+
+  google_ai_application.state:
+    class: Drupal\google_ai_application\Service\ApplicationStateService
+
+  google_ai_application.data_store:
+    class: Drupal\google_ai_application\Service\DataStoreService
+    arguments:
+      - '@google.discovery_engine.datastore_client'
+      - '@logger.factory'
+
+  google_ai_application.engine:
+    class: Drupal\google_ai_application\Service\EngineService
+    arguments:
+      - '@google.discovery_engine.engine_client'
+      - '@logger.factory'
+
+  google_ai_application.schema:
+    class: Drupal\google_ai_application\Service\SchemaService
+    arguments:
+      - '@google.discovery_engine.schema_client'
+      - '@logger.factory'
+
+  google_ai_application.document:
+    class: Drupal\google_ai_application\Service\DocumentService
+    arguments:
+      - '@google.discovery_engine.document_client'
+      - '@logger.factory'
+
+  google_ai_application.document_transformer:
+    class: Drupal\google_ai_application\Service\DocumentTransformerService
+    arguments:
+      - '@entity_field.manager'
+      - '@entity_type.manager'
+
+  google_ai_application.document_import_batch:
+    class: Drupal\google_ai_application\Service\DocumentImportBatchService
+    arguments:
+      - '@google_ai_application.document_transformer'
+      - '@google_ai_application.document'
+      - '@entity_type.manager'
+      - '@logger.factory'
+
+  google_ai_application.workflow:
+    class: Drupal\google_ai_application\Service\ApplicationWorkflowService
+    arguments:
+      - '@google_ai_application.data_store'
+      - '@google_ai_application.engine'
+      - '@google_ai_application.schema'
+      - '@google_ai_application.document'
+
+  google_ai_application.search:
+    class: Drupal\google_ai_application\Service\SearchService
+    arguments:
+      - '@google.discovery_engine.search_client'
+      - '@logger.factory'
+
+  google_ai_application.search_state:
+    class: Drupal\google_ai_application\Service\GoogleAiSearchStateService
+    arguments:
+      - '@session'
