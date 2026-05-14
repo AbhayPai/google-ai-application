@@ -105,40 +105,38 @@ class GoogleAiPageController extends ControllerBase {
     }
 
     // Build and render the search form
-    $form_array = $this->formBuilder()->getForm(
-      \Drupal\google_ai_application\Form\SearchForm::class,
-      $entity
-    );
-    $search_form = \Drupal::service('renderer')->render($form_array);
+    // Inside GoogleAiPageController::view()
+$form_array = $this->formBuilder()->getForm(
+  \Drupal\google_ai_application\Form\SearchForm::class,
+  $entity
+);
 
-    return [
-      '#theme' => 'google_ai_application_page',
-      '#context' => [
-        'search_query' => $query,
-        'results' => $results,
-        'next_page_token' => $next_page_token,
-        'search_error' => $search_error,
-        'pagination_info' => $pagination_info,
-        'current_page' => $current_page,
-        'title' => $entity->label() ?? 'AI Search',
-        'description' => $entity->field_description_caption->value ?? '',
-        'cta_links' => $entity->field_hero_search_cta_links ?? [],
-        'footer_cards' => $entity->footer_cards ?? [],
-        'search_form' => $search_form,
+return [
+  '#theme' => 'google_ai_application_page',
+  // Pass variables directly with '#' prefix
+  '#title' => $entity->label() ?? 'AI Search',
+  '#description' => $entity->field_description_caption->value ?? '',
+  '#search_form' => $form_array, // Pass the array directly
+  '#search_query' => $query,
+  '#results' => $results,
+  '#next_page_token' => $next_page_token,
+  '#search_error' => $search_error,
+  '#pagination_info' => $pagination_info,
+  '#current_page' => $current_page,
+  '#cta_links' => $entity->field_hero_search_cta_links ?? [],
+  '#footer_cards' => $entity->footer_cards ?? [],
+  '#attached' => [
+    'library' => ['google_ai_application/search-ajax'],
+    'drupalSettings' => [
+      'googleAi' => [
+        'entityId' => $entity->id(),
+        'ajaxUrl' => '/google-ai/ajax/search/' . $entity->id(),
+        'initialQuery' => $query,
+        'nextPageToken' => $next_page_token,
+        'currentPage' => $current_page,
       ],
-
-      '#attached' => [
-        'library' => ['google_ai_application/search-ajax'],
-        'drupalSettings' => [
-          'googleAi' => [
-            'entityId' => $entity->id(),
-            'ajaxUrl' => '/google-ai/ajax/search/' . $entity->id(),
-            'initialQuery' => $query,
-            'nextPageToken' => $next_page_token,
-            'currentPage' => $current_page,
-          ],
-        ],
-      ],
-    ];
+    ],
+  ],
+];
   }
 }

@@ -26,48 +26,24 @@
 
     <!-- Results Container -->
     <div id="google-ai-results" class="search-results">
-  {% if search_query %}
-    <p><strong>Searching for:</strong> "{{ search_query }}"</p>
-  {% endif %}
+      {% if search_query %}
+        <p><strong>Searching for:</strong> "{{ search_query }}"</p>
+      {% endif %}
 
-  {% if results %}
-    {% for result in results %}
-      <div class="search-result">
-        <h3>{{ result.title }}</h3>
-        <small>ID: {{ result.id }}</small>
-      </div>
-    {% endfor %}
-  {% elseif search_query %}
-    <p class="no-results">No results found for "{{ search_query }}".</p>
-  {% else %}
-    <p>Please enter a search term above.</p>
-  {% endif %}
-</div>
+      {% if results %}
+        {% for result in results %}
+          <div class="search-result">
+            <h3>{{ result.title }}</h3>
+            <small>ID: {{ result.id }}</small>
+          </div>
+        {% endfor %}
+      {% elseif search_query %}
+        <p class="no-results">No results found for "{{ search_query }}".</p>
+      {% else %}
+        <p>Please enter a search term above.</p>
+      {% endif %}
+    </div>
 
-    <!-- Pagination Controls -->
-    {% if pagination_info %}
-      <nav class="search-pagination" aria-label="Search results pagination">
-        <ul class="pagination-buttons">
-          {% if pagination_info.has_prev %}
-            <li>
-              <a href="?page={{ current_page - 1 }}" class="button button-prev">← Previous</a>
-            </li>
-          {% endif %}
-
-          <li class="pagination-info">
-            <span>Page {{ current_page }}</span>
-          </li>
-
-          {% if pagination_info.has_next %}
-            <li>
-              <a href="?page={{ current_page + 1 }}" class="button button-next">Next →</a>
-            </li>
-          {% endif %}
-        </ul>
-      </nav>
-    {% endif %}
-
-    <!-- Legacy Load More Button (alternative to pagination) -->
     {% if next_page_token %}
       <div class="load-more-wrapper">
         <button id="load-more-btn" type="button" class="button">Load More Results</button>

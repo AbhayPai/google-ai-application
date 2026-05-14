@@ -32,8 +32,14 @@ function google_ai_application_theme(
         'description' => NULL,
         'cta_links' => [],
         'footer_cards' => [],
-        'search_form' => [],
+        'search_form' => NULL,
         'results' => [],
+        // Add the missing variables here:
+        'search_query' => NULL,
+        'search_error' => NULL,
+        'pagination_info' => [],
+        'current_page' => 1,
+        'next_page_token' => NULL,
       ],
     ],
   ];

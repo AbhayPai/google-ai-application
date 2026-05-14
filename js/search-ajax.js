@@ -41,7 +41,7 @@
               nextPageToken = response.next_page_token || null;
 
               if (!nextPageToken) {
-                $btn.hide();
+                $btn.hide(); // Correctly hides the button when the list is exhausted
               } else {
                 $btn.prop('disabled', false).text('Load More Results');
               }
