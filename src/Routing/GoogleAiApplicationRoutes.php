@@ -30,7 +30,7 @@ class GoogleAiApplicationRoutes {
       $route = new Route(
         $path,
         [
-          '_controller' => '\Drupal\google_ai_application\Controller\SupportHubPageController::view',
+          '_controller' => '\Drupal\google_ai_application\Controller\SearchPageController::view',
           'google_ai_application' => $entity->id(),
           '_title' => $entity->label(),
         ],

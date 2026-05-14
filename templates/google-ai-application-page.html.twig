@@ -4,30 +4,57 @@
 
     <h1>{{ title }}</h1>
 
-    <div class="description">
-      {{ description }}
-    </div>
+    {% if description %}
+      <div class="description">
+        {{ description }}
+      </div>
+    {% endif %}
 
     <div class="support-hub-search">
       {{ search_form }}
     </div>
 
-    {% if cta_links %}
-      <div class="cta-links">
-        {% for item in cta_links %}
-          <a href="{{ item.url }}">
-            {{ item.title }}
-          </a>
-        {% endfor %}
-      </div>
-    {% endif %}
-
   </section>
+
+  {% if search_query %}
+
+    <section class="search-results">
+
+      {% if results %}
+
+        {% for result in results %}
+
+          <article class="search-result">
+
+            <h3>{{ result.title }}</h3>
+
+            {% if result.snippet %}
+              <div class="snippet">
+                {{ result.snippet|raw }}
+              </div>
+            {% endif %}
+
+          </article>
+
+        {% endfor %}
+
+      {% else %}
+
+        <div class="search-empty">
+          No results found.
+        </div>
+
+      {% endif %}
+
+    </section>
+
+  {% endif %}
 
   {% if footer_cards %}
     <section class="footer-cards">
 
       {% for card in footer_cards %}
+
         <div class="footer-card">
 
           <h3>{{ card.field_title }}</h3>
@@ -36,11 +63,14 @@
             {{ card.field_content }}
           </div>
 
-          <a href="{{ card.field_link }}">
-            Learn more
-          </a>
+          {% if card.field_link %}
+            <a href="{{ card.field_link }}">
+              Learn more
+            </a>
+          {% endif %}
 
         </div>
+
       {% endfor %}
 
     </section>

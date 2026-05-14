@@ -11,6 +11,7 @@ function google_ai_application_theme(
 ) {
 
   return [
+
     'google_ai_application' => [
       'variables' => [
         'label' => NULL,
@@ -25,15 +26,19 @@ function google_ai_application_theme(
       ],
       'template' => 'google-ai-application',
     ],
+
     'google_ai_application_page' => [
       'template' => 'google-ai-application-page',
       'variables' => [
         'title' => NULL,
         'description' => NULL,
         'cta_links' => [],
-        'footer_cards' => [],
         'search_form' => [],
+        'search_query' => '',
+        'results' => [],
+        'footer_cards' => [],
       ],
     ],
+
   ];
 }

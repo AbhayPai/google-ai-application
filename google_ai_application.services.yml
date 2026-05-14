@@ -73,5 +73,6 @@ services:
   google_ai_application.search:
     class: Drupal\google_ai_application\Service\SearchService
     arguments:
+    arguments:
       - '@google.discovery_engine.search_client'
       - '@logger.factory'

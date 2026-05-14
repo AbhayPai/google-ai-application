@@ -2,22 +2,30 @@
 
 namespace Drupal\google_ai_application\Service;
 
-use Google\ApiCore\ApiException;
-use Google\ApiCore\PagedListResponse;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Google\Cloud\DiscoveryEngine\V1\Client\SearchServiceClient;
 use Google\Cloud\DiscoveryEngine\V1\SearchRequest;
-use Google\Cloud\DiscoveryEngine\V1\SearchResponse\SearchResult;
+use Google\Cloud\DiscoveryEngine\V1\SearchRequest\ContentSearchSpec;
 use Psr\Log\LoggerInterface;
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 
 /**
  * Handles Google Discovery Engine Search operations.
  */
 class SearchService {
 
+  /**
+   * Search client.
+   */
   protected SearchServiceClient $searchServiceClient;
+
+  /**
+   * Logger.
+   */
   protected LoggerInterface $logger;
 
+  /**
+   * Constructor.
+   */
   public function __construct(
     SearchServiceClient $searchServiceClient,
     LoggerChannelFactoryInterface $loggerFactory
@@ -27,56 +35,103 @@ class SearchService {
   }
 
   /**
-   * Update schema in Discovery Engine.
+   * Execute search.
    */
   public function search(
     string $project,
     string $location,
     string $dataStore,
     string $servingConfig,
-    string $query
+    string $query,
+    int $page = 0,
+    int $pageSize = 10
   ): array {
 
     try {
 
-      $formattedServingConfig = $this->searchServiceClient->servingConfigName(
-        $project,
-        $location,
-        $dataStore,
-        $servingConfig
-      );
+      $formattedServingConfig = $this->searchServiceClient
+        ->servingConfigName(
+          $project,
+          $location,
+          $dataStore,
+          $servingConfig
+        );
+
+      $offset = $page * $pageSize;
+
+      $contentSearchSpec = (new ContentSearchSpec())
+        ->setSnippetSpec(
+          new ContentSearchSpec\SnippetSpec([
+            'return_snippet' => TRUE,
+          ])
+        );
 
       $request = (new SearchRequest())
         ->setServingConfig($formattedServingConfig)
         ->setQuery($query)
-        ->setPageSize(10);
+        ->setPageSize($pageSize)
+        ->setOffset($offset)
+        ->setContentSearchSpec($contentSearchSpec);
 
-      /** @var \Google\ApiCore\PagedListResponse $response */
       $response = $this->searchServiceClient->search($request);
 
       $results = [];
-      foreach ($response as $result) {
+
+      foreach ($response->iterateAllElements() as $result) {
 
         $document = $result->getDocument();
+
         $fields = $document->getStructData()->getFields();
 
-        $title = isset($fields['title'])
-          ? $fields['title']->getStringValue()
-          : '';
+        $title = '';
+
+        if (isset($fields['title'])) {
+          $title = $fields['title']->getStringValue();
+        }
+
+        $snippet = '';
+
+        $derivedData = $document->getDerivedStructData();
+
+        if ($derivedData) {
+
+          $derivedFields = $derivedData->getFields();
+
+          if (isset($derivedFields['snippets'])) {
+
+            $snippetItems = $derivedFields['snippets']
+              ->getListValue()
+              ->getValues();
+
+            if (!empty($snippetItems)) {
+
+              $snippetStruct = $snippetItems[0]
+                ->getStructValue()
+                ->getFields();
+
+              if (isset($snippetStruct['snippet'])) {
+                $snippet = $snippetStruct['snippet']
+                  ->getStringValue();
+              }
+            }
+          }
+        }
 
         $results[] = [
           'id' => $document->getId(),
           'title' => $title,
+          // 'snippet' => $snippet,
         ];
       }
 
       return $results;
     }
-    catch (\Google\ApiCore\ApiException $e) {
+    catch (\Exception $e) {
 
-      $this->logger->error('Search failed: @msg', [
-        '@msg' => $e->getMessage(),
-      ]);
+      $this->logger->error(
+        'Discovery Engine search failed: @message',
+        ['@message' => $e->getMessage()]
+      );
 
       return [];
     }
