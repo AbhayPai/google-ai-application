@@ -59,10 +59,17 @@ class SearchService {
         $document = $result->getDocument();
         $fields = $document->getStructData()->getFields();
 
+        // Check if the title field exists before accessing it
+        $title = '';
+        if (isset($fields['title'])) {
+          $title = $fields['title']->getStringValue();
+        } elseif (isset($fields['label'])) {
+          $title = $fields['label']->getStringValue();
+        }
+
         $results[] = [
           'id'    => $document->getId(),
-          'title' => $fields['title']->getStringValue() ?? '',
-          // Add more fields here as needed (e.g. snippet, link, etc.)
+          'title' => $title ?: 'No Title Available',
         ];
       }
 

@@ -55,35 +55,18 @@ class SearchForm extends FormBase {
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $query = trim($form_state->getValue('search_text'));
-
-    if (empty($query)) {
-      return;
-    }
-
     $entity = $this->application;
 
-    // Fallback if entity not passed
-    if (!$entity) {
-      $entity_param = $this->getRouteMatch()->getParameter('google_ai_application');
-      if (is_string($entity_param)) {
-        $entity = \Drupal::entityTypeManager()
-          ->getStorage('google_ai_application')
-          ->load($entity_param);
-      }
-    }
-
-    if ($entity) {
-      // 🔥 Reset and save new query (resets pagination to page 1)
+    if ($entity && !empty($query)) {
+      // This resets the session query and page tokens
       $this->stateService->reset($entity->id(), $query);
 
-      // Save session before redirect to ensure data persists
+      // Explicitly save the session to ensure the redirect picks it up
       \Drupal::service('session_manager')->save();
     }
 
-    // Redirect to page 1 (removes any page parameter)
     $form_state->setRedirect('google_ai_application.page', [
       'google_ai_application' => $entity?->id(),
     ]);
-
   }
 }

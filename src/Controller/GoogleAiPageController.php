@@ -41,23 +41,15 @@ class GoogleAiPageController extends ControllerBase {
 
     $results = [];
     $next_page_token = NULL;
-    $prev_page_token = NULL;
     $search_error = NULL;
     $pagination_info = [];
 
-    // 🔥 Force search on every page load if query exists
     if (!empty($query)) {
       try {
-        // Verify required fields exist
         if (empty($entity->project_name) || empty($entity->location) ||
             empty($entity->data_store_name) || empty($entity->serving_config)) {
-          $search_error = 'Google AI Application is not fully configured. Please complete the setup.';
-          \Drupal::logger('google_ai_application')->warning(
-            'Incomplete configuration for entity @id',
-            ['@id' => $entity->id()]
-          );
+          $search_error = 'Configuration incomplete.';
         } else {
-          // Get the page token for the requested page
           $page_token = $current_page > 1 ? $this->stateService->getPageToken($entity->id(), $current_page) : NULL;
 
           $response = $this->searchService->search(
@@ -73,70 +65,54 @@ class GoogleAiPageController extends ControllerBase {
           $results = $response['results'] ?? [];
           $next_page_token = $response['next_page_token'] ?? NULL;
 
-          // Store page token if there's a next page
           if (!empty($next_page_token)) {
             $this->stateService->addPageToken($entity->id(), $next_page_token);
           }
 
-          // Update current page in state
           $this->stateService->setCurrentPage($entity->id(), $current_page);
 
-          // Build pagination info
           $pagination_info = [
             'current_page' => $current_page,
             'has_next' => !empty($next_page_token),
             'has_prev' => $current_page > 1,
           ];
-
-          if (empty($results) && !empty($response)) {
-            \Drupal::logger('google_ai_application')->debug(
-              'Search returned no results for query: @query on page @page',
-              ['@query' => $query, '@page' => $current_page]
-            );
-          }
         }
       } catch (\Exception $e) {
-        $search_error = 'Search failed. Please try again later.';
-        \Drupal::logger('google_ai_application')->error(
-          'Search error: @error',
-          ['@error' => $e->getMessage()]
-        );
+        $search_error = 'Search failed.';
       }
     }
 
-    // Build and render the search form
-    // Inside GoogleAiPageController::view()
-$form_array = $this->formBuilder()->getForm(
-  \Drupal\google_ai_application\Form\SearchForm::class,
-  $entity
-);
+    // Pass the form as a render array, NOT pre-rendered HTML
+    $search_form = $this->formBuilder()->getForm(
+      \Drupal\google_ai_application\Form\SearchForm::class,
+      $entity
+    );
 
-return [
-  '#theme' => 'google_ai_application_page',
-  // Pass variables directly with '#' prefix
-  '#title' => $entity->label() ?? 'AI Search',
-  '#description' => $entity->field_description_caption->value ?? '',
-  '#search_form' => $form_array, // Pass the array directly
-  '#search_query' => $query,
-  '#results' => $results,
-  '#next_page_token' => $next_page_token,
-  '#search_error' => $search_error,
-  '#pagination_info' => $pagination_info,
-  '#current_page' => $current_page,
-  '#cta_links' => $entity->field_hero_search_cta_links ?? [],
-  '#footer_cards' => $entity->footer_cards ?? [],
-  '#attached' => [
-    'library' => ['google_ai_application/search-ajax'],
-    'drupalSettings' => [
-      'googleAi' => [
-        'entityId' => $entity->id(),
-        'ajaxUrl' => '/google-ai/ajax/search/' . $entity->id(),
-        'initialQuery' => $query,
-        'nextPageToken' => $next_page_token,
-        'currentPage' => $current_page,
+    return [
+      '#theme' => 'google_ai_application_page',
+      '#title' => $entity->label() ?? 'AI Search',
+      '#description' => $entity->field_description_caption->value ?? '',
+      '#search_query' => $query,
+      '#results' => $results,
+      '#next_page_token' => $next_page_token,
+      '#search_error' => $search_error,
+      '#pagination_info' => $pagination_info,
+      '#current_page' => $current_page,
+      '#cta_links' => $entity->field_hero_search_cta_links ?? [],
+      '#footer_cards' => $entity->footer_cards ?? [],
+      '#search_form' => $search_form,
+      '#attached' => [
+        'library' => ['google_ai_application/search-ajax'],
+        'drupalSettings' => [
+          'googleAi' => [
+            'entityId' => $entity->id(),
+            'ajaxUrl' => '/google-ai/ajax/search/' . $entity->id(),
+            'initialQuery' => $query,
+            'nextPageToken' => $next_page_token,
+            'currentPage' => $current_page,
+          ],
+        ],
       ],
-    ],
-  ],
-];
+    ];
   }
 }

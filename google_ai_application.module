@@ -3,13 +3,7 @@
 /**
  * Implements hook_theme().
  */
-function google_ai_application_theme(
-  $existing,
-  $type,
-  $theme,
-  $path
-) {
-
+function google_ai_application_theme($existing, $type, $theme, $path) {
   return [
     'google_ai_application' => [
       'variables' => [
@@ -34,7 +28,6 @@ function google_ai_application_theme(
         'footer_cards' => [],
         'search_form' => NULL,
         'results' => [],
-        // Add the missing variables here:
         'search_query' => NULL,
         'search_error' => NULL,
         'pagination_info' => [],
