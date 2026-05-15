@@ -21,6 +21,7 @@ function google_ai_application_theme(
         'location' => NULL,
         'branch_name' => NULL,
         'content_types' => NULL,
+        'serving_config' => NULL,
         'total_nodes' => 0,
         'content_type_counts' => [],
       ],

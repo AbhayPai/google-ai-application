@@ -60,6 +60,7 @@ class GoogleAiApplicationViewBuilder extends EntityViewBuilder {
       '#location' => $entity->get('location'),
       '#branch_name' => $entity->get('branch_name'),
       '#app_name' => $entity->get('app_name'),
+      '#serving_config' => $entity->get('serving_config'),
 
       '#content_types' => implode(', ', array_filter($content_types)),
 
