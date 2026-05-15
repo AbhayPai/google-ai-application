@@ -16,59 +16,32 @@
 
   </section>
 
-  {% if search_query %}
-    <section class="search-results">
-      {% if results %}
-        {% for result in results %}
-          <article class="search-result">
-            <h3>{{ result.title }}</h3>
-
-            {% if result.snippet %}
-              <div class="snippet">
-                {{ result.snippet|raw }}
-              </div>
-            {% endif %}
-
-          </article>
-
-        {% endfor %}
-
-      {% else %}
-
-        <div class="search-empty">
-          No results found.
-        </div>
-
-      {% endif %}
-
-    </section>
-
+  {% if facet_form %}
+    <aside class="support-hub-facets">
+      {{ facet_form }}
+    </aside>
   {% endif %}
 
-  {% if footer_cards %}
-    <section class="footer-cards">
+  {% if search_query %}
 
-      {% for card in footer_cards %}
+    <section class="search-results">
 
-        <div class="footer-card">
+      {% for result in results %}
+        <article class="search-result">
+          <h3>{{ result.title }}</h3>
 
-          <h3>{{ card.field_title }}</h3>
-
-          <div>
-            {{ card.field_content }}
-          </div>
-
-          {% if card.field_link %}
-            <a href="{{ card.field_link }}">
-              Learn more
-            </a>
+          {% if result.snippet %}
+            <div class="snippet">
+              {{ result.snippet|raw }}
+            </div>
           {% endif %}
-
-        </div>
-
+        </article>
+      {% else %}
+        <div class="search-empty">No results found.</div>
       {% endfor %}
 
     </section>
+
   {% endif %}
 
 </div>

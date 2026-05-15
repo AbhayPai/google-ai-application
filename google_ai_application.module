@@ -42,6 +42,7 @@ function google_ai_application_theme(
         'description' => NULL,
         'cta_links' => [],
         'search_form' => [],
+        'facet_form' => [],
         'search_query' => '',
         'results' => [],
         'footer_cards' => [],

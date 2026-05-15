@@ -54,6 +54,14 @@ google_ai_application.schema_form:
   requirements:
     _permission: 'administer site configuration'
 
+google_ai_application.facet_config_form:
+  path: '/admin/config/search/google-ai-application/{google_ai_application}/facet-config'
+  defaults:
+    _form: '\Drupal\google_ai_application\Form\FacetConfigForm'
+    _title: 'Facet Configuration'
+  requirements:
+    _permission: 'administer site configuration'
+
 google_ai_application.import_form:
   path: '/admin/config/search/google-ai-application/{google_ai_application}/import'
   defaults:

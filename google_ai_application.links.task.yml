@@ -18,6 +18,11 @@ google_ai_application.schema:
   base_route: entity.google_ai_application.canonical
   title: 'Schema'
 
+google_ai_application.facet:
+  route_name: google_ai_application.facet_config_form
+  base_route: entity.google_ai_application.canonical
+  title: 'Facet Config'
+
 google_ai_application.import:
   route_name: google_ai_application.import_form
   base_route: entity.google_ai_application.canonical

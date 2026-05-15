@@ -3,7 +3,6 @@
 namespace Drupal\google_ai_application\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\google_ai_application\Service\SearchService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -14,16 +13,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class SearchPageController extends ControllerBase {
 
-  protected SearchService $searchService;
-  protected RequestStack $requestStack;
-
   public function __construct(
-    SearchService $searchService,
-    RequestStack $requestStack
-  ) {
-    $this->searchService = $searchService;
-    $this->requestStack = $requestStack;
-  }
+    protected SearchService $searchService,
+    protected RequestStack $requestStack
+  ) {}
 
   public static function create(ContainerInterface $container): static {
     return new static(
@@ -32,12 +25,8 @@ class SearchPageController extends ControllerBase {
     );
   }
 
-  /**
-   * Support Hub page.
-   */
   public function view(string $google_ai_application): array {
 
-    // Use ControllerBase built-in service (NO property!)
     $entity = $this->entityTypeManager()
       ->getStorage('google_ai_application')
       ->load($google_ai_application);
@@ -49,17 +38,14 @@ class SearchPageController extends ControllerBase {
     $request = $this->requestStack->getCurrentRequest();
 
     $query = trim((string) $request->query->get('search_text', ''));
-
     $page = (int) $request->query->get('page', 0);
-
-    $effectiveQuery = $query !== '' ? $query : '';
 
     $results = $this->searchService->search(
       $entity->project_name ?? '',
       $entity->location ?? '',
       $entity->data_store_name ?? '',
       $entity->serving_config ?? '',
-      $effectiveQuery,
+      $query,
       $page
     );
 
@@ -75,6 +61,14 @@ class SearchPageController extends ControllerBase {
       '#search_query' => $query,
       '#results' => $results,
 
+      /**
+       * ALL FACET LOGIC INSIDE FORM
+       */
+      '#facet_form' => $this->formBuilder()->getForm(
+        'Drupal\google_ai_application\Form\FacetFilterForm',
+        $google_ai_application
+      ),
+
       '#search_form' => $this->formBuilder()->getForm(
         'Drupal\google_ai_application\Form\SearchForm'
       ),
@@ -82,11 +76,9 @@ class SearchPageController extends ControllerBase {
       '#cache' => [
         'contexts' => [
           'url',
-          'url.query_args:search_text',
-          'url.query_args:page',
+          'url.query_args',
         ],
       ],
     ];
   }
-
 }
