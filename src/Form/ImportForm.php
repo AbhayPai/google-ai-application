@@ -48,7 +48,18 @@ class ImportForm extends FormBase {
 
     $ready = $this->workflow->isReadyForImport($entity);
 
-    $form['info'] = [
+    $form['config'] = [
+      '#type' => 'vertical_tabs',
+      '#default_tab' => 'edit-config',
+    ];
+
+    $form['import'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Import'),
+      '#group' => 'config',
+    ];
+
+    $form['import']['info'] = [
       '#markup' => $this->t('<h2>Import: @label</h2>', ['@label' => $entity->label()]),
     ];
 
@@ -57,11 +68,11 @@ class ImportForm extends FormBase {
       '#value' => $entity->id(),
     ];
 
-    $form['actions'] = [
+    $form['import']['actions'] = [
       '#type' => 'actions',
     ];
 
-    $form['actions']['submit'] = [
+    $form['import']['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Import Documents'),
       '#button_type' => 'primary',

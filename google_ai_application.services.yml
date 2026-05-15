@@ -69,6 +69,7 @@ services:
       - '@google_ai_application.data_store'
       - '@google_ai_application.engine'
       - '@google_ai_application.schema'
+      - '@google_ai_application.document'
 
   google_ai_application.search:
     class: Drupal\google_ai_application\Service\SearchService

@@ -43,7 +43,18 @@ class PurgeForm extends FormBase {
       return [];
     }
 
-    $form['info'] = [
+    $form['config'] = [
+      '#type' => 'vertical_tabs',
+      '#default_tab' => 'edit-config',
+    ];
+
+    $form['purge'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Purge'),
+      '#group' => 'config',
+    ];
+
+    $form['purge']['info'] = [
       '#markup' => $this->t('<h2>Purge index: @label</h2>', [
         '@label' => $entity->label(),
       ]),
@@ -54,7 +65,11 @@ class PurgeForm extends FormBase {
       '#value' => $entity->id(),
     ];
 
-    $form['submit'] = [
+    $form['purge']['actions'] = [
+      '#type' => 'actions',
+    ];
+
+    $form['purge']['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Purge Index'),
       '#button_type' => 'danger',

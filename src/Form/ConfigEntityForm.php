@@ -7,7 +7,6 @@ use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\Entity\NodeType;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\google_ai_application\Service\DocumentService;
 
 /**
  * Google AI Application configuration form.
@@ -15,25 +14,20 @@ use Drupal\google_ai_application\Service\DocumentService;
 class ConfigEntityForm extends EntityForm {
 
   protected EntityFieldManagerInterface $fieldManager;
-  protected DocumentService $documentService;
 
   public function __construct(
-    EntityFieldManagerInterface $fieldManager,
-    DocumentService $documentService
+    EntityFieldManagerInterface $fieldManager
   ) {
     $this->fieldManager = $fieldManager;
-    $this->documentService = $documentService;
   }
 
   public static function create(ContainerInterface $container): static {
     return new static(
       $container->get('entity_field.manager'),
-      $container->get('google_ai_application.document')
     );
   }
 
   public function form(array $form, FormStateInterface $form_state): array {
-
     /** @var \Drupal\google_ai_application\Entity\GoogleAiApplication $entity */
     $entity = $this->entity;
 
@@ -42,16 +36,21 @@ class ConfigEntityForm extends EntityForm {
       $content_types[$type->id()] = $type->label();
     }
 
+    $form['config'] = [
+      '#type' => 'vertical_tabs',
+      '#default_tab' => 'edit-config',
+    ];
+
     // =========================
     // APPLICATION CONFIG
     // =========================
-    $form['application_configuration'] = [
+    $form['application'] = [
       '#type' => 'details',
-      '#title' => $this->t('Application Configuration'),
-      '#open' => TRUE,
+      '#title' => $this->t('Configuration'),
+      '#group' => 'config',
     ];
 
-    $form['application_configuration']['label'] = [
+    $form['application']['label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Label'),
       '#required' => TRUE,
@@ -59,7 +58,7 @@ class ConfigEntityForm extends EntityForm {
       '#disabled' => !$entity->isNew(),
     ];
 
-    $form['application_configuration']['id'] = [
+    $form['application']['id'] = [
       '#type' => 'machine_name',
       '#default_value' => $entity->id(),
       '#machine_name' => [
@@ -68,7 +67,7 @@ class ConfigEntityForm extends EntityForm {
       '#disabled' => !$entity->isNew(),
     ];
 
-    $form['application_configuration']['project_name'] = [
+    $form['application']['project_name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Project ID'),
       '#required' => TRUE,
@@ -76,7 +75,7 @@ class ConfigEntityForm extends EntityForm {
       '#disabled' => !$entity->isNew(),
     ];
 
-    $form['application_configuration']['app_name'] = [
+    $form['application']['app_name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('App Name'),
       '#required' => TRUE,
@@ -84,7 +83,7 @@ class ConfigEntityForm extends EntityForm {
       '#disabled' => !$entity->isNew(),
     ];
 
-    $form['application_configuration']['data_store_name'] = [
+    $form['application']['data_store_name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Data Store Name'),
       '#required' => TRUE,
@@ -92,7 +91,7 @@ class ConfigEntityForm extends EntityForm {
       '#disabled' => !$entity->isNew(),
     ];
 
-    $form['application_configuration']['schema_name'] = [
+    $form['application']['schema_name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Schema Name'),
       '#required' => TRUE,
@@ -100,7 +99,7 @@ class ConfigEntityForm extends EntityForm {
       '#disabled' => !$entity->isNew(),
     ];
 
-    $form['application_configuration']['location'] = [
+    $form['application']['location'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Location'),
       '#required' => TRUE,
@@ -108,7 +107,7 @@ class ConfigEntityForm extends EntityForm {
       '#disabled' => !$entity->isNew(),
     ];
 
-    $form['application_configuration']['branch_name'] = [
+    $form['application']['branch_name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Branch Name'),
       '#required' => TRUE,
@@ -116,7 +115,7 @@ class ConfigEntityForm extends EntityForm {
       '#disabled' => !$entity->isNew(),
     ];
 
-    $form['application_configuration']['serving_config'] = [
+    $form['application']['serving_config'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Search Serving Config'),
       '#required' => TRUE,
@@ -127,13 +126,13 @@ class ConfigEntityForm extends EntityForm {
     // =========================
     // CONTENT TYPES
     // =========================
-    $form['schema_configuration'] = [
+    $form['schema'] = [
       '#type' => 'details',
-      '#title' => $this->t('Schema Configuration'),
-      '#open' => TRUE,
+      '#title' => $this->t('Schema'),
+      '#group' => 'config',
     ];
 
-    $form['schema_configuration']['content_type'] = [
+    $form['schema']['content_type'] = [
       '#type' => 'checkboxes',
       '#title' => $this->t('Content Types'),
       '#options' => $content_types,

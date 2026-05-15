@@ -53,7 +53,18 @@ class SchemaForm extends FormBase {
 
     $schema_url = base_path() . $module_path . '/examples/data/Initial-Schema.json';
 
-    $form['struct_schema'] = [
+    $form['config'] = [
+      '#type' => 'vertical_tabs',
+      '#default_tab' => 'edit-config',
+    ];
+
+    $form['schema'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Schema'),
+      '#group' => 'config',
+    ];
+
+    $form['schema']['struct_schema'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Struct Schema (JSON)'),
       '#default_value' => $entity->get('struct_schema') ?: '',
@@ -65,6 +76,7 @@ class SchemaForm extends FormBase {
         <a href=":url" target="_blank">Sample schema</a>',
         [':url' => $schema_url]
       ),
+      '#rows' => 20,
     ];
 
     $form['entity_id'] = [

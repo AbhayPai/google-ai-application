@@ -112,8 +112,18 @@ class SearchConfigForm extends EntityForm {
     // -------------------------------------------------------------------------
     // Hero Banner Search Component.
     // -------------------------------------------------------------------------
+    $form['config'] = [
+      '#type' => 'vertical_tabs',
+      '#default_tab' => 'edit-config',
+    ];
 
-    $form['page_path'] = [
+    $form['page'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Page'),
+      '#group' => 'config',
+    ];
+
+    $form['page']['page_path'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Page path'),
       '#description' => $this->t('Example: /support-hub'),
@@ -124,7 +134,7 @@ class SearchConfigForm extends EntityForm {
     $form['hero_banner_search_component'] = [
       '#type' => 'details',
       '#title' => $this->t('Hero Banner Search Component'),
-      '#open' => TRUE,
+      '#group' => 'config',
     ];
 
     $form['hero_banner_search_component']['field_title'] = [
@@ -213,7 +223,7 @@ class SearchConfigForm extends EntityForm {
     $form['footer_card_component'] = [
       '#type' => 'details',
       '#title' => $this->t('Footer Card Component'),
-      '#open' => TRUE,
+      '#group' => 'config',
     ];
 
     $form['footer_card_component']['footer_cards'] = [
