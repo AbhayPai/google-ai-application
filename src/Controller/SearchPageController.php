@@ -9,22 +9,25 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Support Hub Page Controller.
+ * Search page controller.
  */
 class SearchPageController extends ControllerBase {
 
   public function __construct(
     protected SearchService $searchService,
-    protected RequestStack $requestStack
+    protected RequestStack $requestStack,
   ) {}
 
   public static function create(ContainerInterface $container): static {
     return new static(
       $container->get('google_ai_application.search'),
-      $container->get('request_stack')
+      $container->get('request_stack'),
     );
   }
 
+  /**
+   * Search page.
+   */
   public function view(string $google_ai_application): array {
 
     $entity = $this->entityTypeManager()
@@ -38,6 +41,7 @@ class SearchPageController extends ControllerBase {
     $request = $this->requestStack->getCurrentRequest();
 
     $query = trim((string) $request->query->get('search_text', ''));
+
     $page = (int) $request->query->get('page', 0);
 
     $results = $this->searchService->search(
@@ -61,9 +65,6 @@ class SearchPageController extends ControllerBase {
       '#search_query' => $query,
       '#results' => $results,
 
-      /**
-       * ALL FACET LOGIC INSIDE FORM
-       */
       '#facet_form' => $this->formBuilder()->getForm(
         'Drupal\google_ai_application\Form\FacetFilterForm',
         $google_ai_application
@@ -75,10 +76,15 @@ class SearchPageController extends ControllerBase {
 
       '#cache' => [
         'contexts' => [
-          'url',
-          'url.query_args',
+          'url.path',
+          'url.query_args:search_text',
+          'url.query_args:page',
+        ],
+        'tags' => [
+          'config:google_ai_application.google_ai_application.' . $google_ai_application,
         ],
       ],
     ];
   }
+
 }
