@@ -1,0 +1,17 @@
+<form{{ attributes.addClass('support-search-form') }}>
+
+  <div class="support-search-inner">
+
+    <div class="support-search-input">
+      {{ form.search_text }}
+    </div>
+
+    <div class="support-search-submit">
+      {{ form.actions.submit }}
+    </div>
+
+  </div>
+
+  {{ form|without('search_text', 'actions') }}
+
+</form>

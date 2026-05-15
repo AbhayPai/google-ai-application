@@ -9,6 +9,7 @@ function google_ai_application_theme(
   $theme,
   $path
 ) {
+  $module_path = \Drupal::service('extension.list.module')->getPath('google_ai_application');
 
   return [
 
@@ -26,6 +27,12 @@ function google_ai_application_theme(
         'content_type_counts' => [],
       ],
       'template' => 'google-ai-application',
+    ],
+
+    'google_ai_application_search_form' => [
+      'render element' => 'form',
+      'template' => 'form--google-ai-application-search-form',
+      'path' => $module_path . '/templates/form',
     ],
 
     'google_ai_application_page' => [

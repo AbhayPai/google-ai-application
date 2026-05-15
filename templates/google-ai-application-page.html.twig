@@ -17,15 +17,10 @@
   </section>
 
   {% if search_query %}
-
     <section class="search-results">
-
       {% if results %}
-
         {% for result in results %}
-
           <article class="search-result">
-
             <h3>{{ result.title }}</h3>
 
             {% if result.snippet %}
