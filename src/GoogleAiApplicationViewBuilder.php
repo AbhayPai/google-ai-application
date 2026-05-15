@@ -25,7 +25,6 @@ class GoogleAiApplicationViewBuilder extends EntityViewBuilder {
   }
 
   public function view(EntityInterface $entity, $view_mode = 'full', $langcode = NULL): array {
-
     $content_types = (array) $entity->get('content_type');
 
     $storage = $this->entityTypeManager->getStorage('node');
@@ -51,7 +50,6 @@ class GoogleAiApplicationViewBuilder extends EntityViewBuilder {
 
     return [
       '#theme' => 'google_ai_application',
-
       // Core config
       '#label' => $entity->label(),
       '#project_name' => $entity->get('project_name'),
@@ -61,9 +59,7 @@ class GoogleAiApplicationViewBuilder extends EntityViewBuilder {
       '#branch_name' => $entity->get('branch_name'),
       '#app_name' => $entity->get('app_name'),
       '#serving_config' => $entity->get('serving_config'),
-
       '#content_types' => implode(', ', array_filter($content_types)),
-
       // Computed stats
       '#total_nodes' => $total_nodes,
       '#content_type_counts' => $content_type_counts,

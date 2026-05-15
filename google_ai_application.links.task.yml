@@ -28,7 +28,7 @@ google_ai_application.purge:
   base_route: entity.google_ai_application.canonical
   title: 'Purge'
 
-google_ai_application.search:
-  route_name: google_ai_application.search_config_form
+google_ai_application.search_component:
+  route_name: google_ai_application.search_component_form
   base_route: entity.google_ai_application.canonical
-  title: 'Search Config'
+  title: 'Search Component'

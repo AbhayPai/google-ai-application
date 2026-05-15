@@ -18,7 +18,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
  *       "add" = "Drupal\google_ai_application\Form\ConfigEntityForm",
  *       "edit" = "Drupal\google_ai_application\Form\ConfigEntityForm",
  *       "delete" = "Drupal\Core\Entity\EntityDeleteForm",
- *       "search_config" = "Drupal\google_ai_application\Form\SearchConfigForm"
+ *       "search_component" = "Drupal\google_ai_application\Form\SearchComponentForm"
  *     }
  *   },
  *   admin_permission = "administer site configuration",

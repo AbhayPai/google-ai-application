@@ -8,7 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 /**
  * Google AI Application entity search config form.
  */
-class SearchConfigForm extends EntityForm {
+class SearchComponentForm extends EntityForm {
 
   /**
    * {@inheritdoc}
@@ -89,46 +89,11 @@ class SearchConfigForm extends EntityForm {
     }
 
     // -------------------------------------------------------------------------
-    // Basic entity fields.
-    // -------------------------------------------------------------------------
-
-    $form['label'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Label'),
-      '#required' => TRUE,
-      '#default_value' => $entity->label(),
-      '#disabled' => !$entity->isNew(),
-    ];
-
-    $form['id'] = [
-      '#type' => 'machine_name',
-      '#default_value' => $entity->id(),
-      '#machine_name' => [
-        'exists' => '\Drupal\google_ai_application\Entity\GoogleAiApplication::load',
-      ],
-      '#disabled' => !$entity->isNew(),
-    ];
-
-    // -------------------------------------------------------------------------
     // Hero Banner Search Component.
     // -------------------------------------------------------------------------
     $form['config'] = [
       '#type' => 'vertical_tabs',
       '#default_tab' => 'edit-config',
-    ];
-
-    $form['page'] = [
-      '#type' => 'details',
-      '#title' => $this->t('Page'),
-      '#group' => 'config',
-    ];
-
-    $form['page']['page_path'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Page path'),
-      '#description' => $this->t('Example: /support-hub'),
-      '#required' => TRUE,
-      '#default_value' => $entity->page_path ?? '',
     ];
 
     $form['hero_banner_search_component'] = [
@@ -233,7 +198,6 @@ class SearchConfigForm extends EntityForm {
     ];
 
     foreach ($footer_cards as $index => $card) {
-
       $form['footer_card_component']['footer_cards'][$index] = [
         '#type' => 'fieldset',
         '#title' => $this->t('Footer card @number', [
@@ -289,113 +253,14 @@ class SearchConfigForm extends EntityForm {
       ],
     ];
 
+    $form['entity_id'] = [
+      '#type' => 'hidden',
+      '#value' => $entity->id(),
+    ];
+
     return $form;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    parent::validateForm($form, $form_state);
-
-    $path = trim($form_state->getValue('page_path'));
-
-    // ---------------------------------------------------------------------------
-    // Path must start with "/".
-    // ---------------------------------------------------------------------------
-
-    if (!str_starts_with($path, '/')) {
-
-      $form_state->setErrorByName(
-        'page_path',
-        $this->t('The path must start with "/".')
-      );
-    }
-
-    // ---------------------------------------------------------------------------
-    // Prevent reserved paths.
-    // ---------------------------------------------------------------------------
-
-    $reserved_paths = [
-      '/',
-      '/admin',
-      '/user',
-      '/node',
-    ];
-
-    if (in_array($path, $reserved_paths, TRUE)) {
-
-      $form_state->setErrorByName(
-        'page_path',
-        $this->t('This path is reserved.')
-      );
-    }
-
-    // ---------------------------------------------------------------------------
-    // Prevent existing Drupal route conflicts.
-    // ---------------------------------------------------------------------------
-
-    try {
-
-      $route_provider = \Drupal::service('router.route_provider');
-
-      $existing_routes = $route_provider->getRoutesByPattern($path);
-
-      foreach ($existing_routes as $route_name => $route) {
-
-        // Ignore current entity route.
-        if (str_contains($route_name, 'google_ai_application.dynamic.')) {
-          continue;
-        }
-
-        $form_state->setErrorByName(
-          'page_path',
-          $this->t(
-            'This path is already used by route: @route',
-            ['@route' => $route_name]
-          )
-        );
-
-        break;
-      }
-    }
-    catch (\Exception $e) {
-
-      watchdog_exception('google_ai_application', $e);
-    }
-
-    // ---------------------------------------------------------------------------
-    // Prevent duplicate entity paths.
-    // ---------------------------------------------------------------------------
-
-    $storage = \Drupal::entityTypeManager()
-      ->getStorage('google_ai_application');
-
-    $entities = $storage->loadMultiple();
-
-    foreach ($entities as $entity) {
-
-      // Ignore current entity.
-      if (
-        !$this->entity->isNew()
-        && $entity->id() === $this->entity->id()
-      ) {
-        continue;
-      }
-
-      if (($entity->page_path ?? '') === $path) {
-
-        $form_state->setErrorByName(
-          'page_path',
-          $this->t(
-            'Another Google AI Application already uses this path.'
-          )
-        );
-
-        break;
-      }
-    }
-  }
   /**
    * Add CTA row.
    */
@@ -479,18 +344,19 @@ class SearchConfigForm extends EntityForm {
     $form_state->setRebuild(TRUE);
   }
 
+  private function loadEntity(FormStateInterface $form_state) {
+    return $this->entityTypeManager
+      ->getStorage('google_ai_application')
+      ->load($form_state->getValue('entity_id'));
+  }
+
   /**
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
 
-    /** @var \Drupal\google_ai_application\Entity\GoogleAiApplication $entity */
-    $entity = $this->entity;
-
-    $entity->set(
-      'page_path',
-      $form_state->getValue('page_path')
-    );
+    $entity = $this->loadEntity($form_state);
+    if (!$entity) return;
 
     // -------------------------------------------------------------------------
     // Clean CTA links.
@@ -532,8 +398,6 @@ class SearchConfigForm extends EntityForm {
     // Save entity fields.
     // -------------------------------------------------------------------------
 
-    $entity->set('label', $form_state->getValue('label'));
-
     $entity->set('field_title', $form_state->getValue('field_title'));
 
     $entity->set(
@@ -563,20 +427,11 @@ class SearchConfigForm extends EntityForm {
 
     $status = $entity->save();
 
-    if ($status === SAVED_NEW) {
-      $this->messenger()->addStatus(
-        $this->t('Created the %label application.', [
-          '%label' => $entity->label(),
-        ])
-      );
-    }
-    else {
-      $this->messenger()->addStatus(
-        $this->t('Saved the %label application.', [
-          '%label' => $entity->label(),
-        ])
-      );
-    }
+    $this->messenger()->addStatus(
+      $this->t('Updated components for %label application.', [
+        '%label' => $entity->label(),
+      ])
+    );
 
     $form_state->setRedirectUrl($entity->toUrl('collection'));
   }

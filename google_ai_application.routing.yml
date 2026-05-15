@@ -70,11 +70,11 @@ google_ai_application.purge_form:
   requirements:
     _permission: 'administer site configuration'
 
-google_ai_application.search_config_form:
-  path: '/admin/config/search/google-ai-application/{google_ai_application}/search-config'
+google_ai_application.search_component_form:
+  path: '/admin/config/search/google-ai-application/{google_ai_application}/search-component'
   defaults:
-    _entity_form: 'google_ai_application.search_config'
-    _title: 'Search Config'
+    _entity_form: 'google_ai_application.search_component'
+    _title: 'Search Component'
   requirements:
     _permission: 'administer site configuration'
   options:

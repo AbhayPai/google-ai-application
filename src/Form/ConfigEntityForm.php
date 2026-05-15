@@ -141,7 +141,126 @@ class ConfigEntityForm extends EntityForm {
       '#disabled' => !$entity->isNew(),
     ];
 
+    // =========================
+    // CONTENT TYPES
+    // =========================
+    $form['page'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Page'),
+      '#group' => 'config',
+    ];
+
+    $form['page']['page_path'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Page path'),
+      '#description' => $this->t('Example: /support-hub'),
+      '#required' => TRUE,
+      '#default_value' => $entity->page_path ?? '',
+    ];
+
     return parent::form($form, $form_state);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    parent::validateForm($form, $form_state);
+
+    $path = trim($form_state->getValue('page_path'));
+
+    // ---------------------------------------------------------------------------
+    // Path must start with "/".
+    // ---------------------------------------------------------------------------
+
+    if (!str_starts_with($path, '/')) {
+      $form_state->setErrorByName(
+        'page_path',
+        $this->t('The path must start with "/".')
+      );
+    }
+
+    // ---------------------------------------------------------------------------
+    // Prevent reserved paths.
+    // ---------------------------------------------------------------------------
+
+    $reserved_paths = [
+      '/',
+      '/admin',
+      '/user',
+      '/node',
+    ];
+
+    if (in_array($path, $reserved_paths, TRUE)) {
+      $form_state->setErrorByName(
+        'page_path',
+        $this->t('This path is reserved.')
+      );
+    }
+
+    // ---------------------------------------------------------------------------
+    // Prevent existing Drupal route conflicts.
+    // ---------------------------------------------------------------------------
+
+    try {
+
+      $route_provider = \Drupal::service('router.route_provider');
+
+      $existing_routes = $route_provider->getRoutesByPattern($path);
+
+      foreach ($existing_routes as $route_name => $route) {
+
+        // Ignore current entity route.
+        if (str_contains($route_name, 'google_ai_application.dynamic.')) {
+          continue;
+        }
+
+        $form_state->setErrorByName(
+          'page_path',
+          $this->t(
+            'This path is already used by route: @route',
+            ['@route' => $route_name]
+          )
+        );
+
+        break;
+      }
+    }
+    catch (\Exception $e) {
+      watchdog_exception('google_ai_application', $e);
+    }
+
+    // ---------------------------------------------------------------------------
+    // Prevent duplicate entity paths.
+    // ---------------------------------------------------------------------------
+
+    $storage = \Drupal::entityTypeManager()
+      ->getStorage('google_ai_application');
+
+    $entities = $storage->loadMultiple();
+
+    foreach ($entities as $entity) {
+
+      // Ignore current entity.
+      if (
+        !$this->entity->isNew()
+        && $entity->id() === $this->entity->id()
+      ) {
+        continue;
+      }
+
+      if (($entity->page_path ?? '') === $path) {
+
+        $form_state->setErrorByName(
+          'page_path',
+          $this->t(
+            'Another Google AI Application already uses this path.'
+          )
+        );
+
+        break;
+      }
+    }
   }
 
   public function save(array $form, FormStateInterface $form_state): int {
@@ -161,6 +280,7 @@ class ConfigEntityForm extends EntityForm {
     $entity->set('branch_name', $form_state->getValue('branch_name'));
     $entity->set('serving_config', $form_state->getValue('serving_config'));
     $entity->set('app_name', $form_state->getValue('app_name'));
+    $entity->set('page_path', $form_state->getValue('page_path'));
 
     $status = $entity->save();
 
@@ -168,7 +288,7 @@ class ConfigEntityForm extends EntityForm {
       $this->t('Google AI Application configuration saved.')
     );
 
-    $form_state->setRedirect('entity.google_ai_application.collection');
+    $form_state->setRedirect('<current>');
 
     return $status;
   }
